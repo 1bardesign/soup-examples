@@ -33,21 +33,33 @@ function state:enter()
 	self.k = kernel
 
 	kernel:add({
-		pos = vec2(100, 100),
+		pos = vec2(100, 200),
 		t = 0,
 		update = function(self, dt)
-			if not self.opos then
-				self.opos = self.pos:copy()
+			local move = vec2(0, 0)
+			if input.keyboard:pressed("left") or input.keyboard:pressed("a") then
+				move:saddi(-1, 0)
 			end
-			self.t = self.t + dt
-			self.pos:vset(self.opos)
-				:saddi(math.sin(self.t) * 50, math.cos(self.t * 2.5) * 10)
+			if input.keyboard:pressed("right") or input.keyboard:pressed("d") then
+				move:saddi(1, 0)
+			end
+			if input.keyboard:pressed("up") or input.keyboard:pressed("w") then
+				move:saddi(0, -1)
+			end
+			if input.keyboard:pressed("down") or input.keyboard:pressed("s") then
+				move:saddi(0, 1)
+			end
+			if move:length_squared() ~= 0 then
+				move:normalise_inplace()
+			end
+			self.pos:fmai(move, 50 * dt)
 		end,
 		draw = function()
-			lg.print("test guy")
+			lg.print(":) wasd me")
 		end,
 	})
 
+	--mouse cursor fireworks
 	kernel:add({
 		timer = 0,
 		time = 0.005,
