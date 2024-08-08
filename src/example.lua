@@ -98,6 +98,7 @@ function state:enter()
 				%04.2fms total (%d maximum fps - %d ticks %d draws)
 				%04.2fms update
 				%04.2fms draw
+				%04.2fms collect garbage
 				%04.2fmb
 				%d components
 			]]):dedent():format(
@@ -107,6 +108,7 @@ function state:enter()
 				main_loop.frames_per_second:get(),
 				UPDATE_TIME * 1000,
 				DRAW_TIME * 1000,
+				main_loop.garbage_time * 1000,
 				collectgarbage("count") / 1024,
 				#kernel.all
 			))
