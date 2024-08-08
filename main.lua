@@ -1,6 +1,7 @@
+--deps
 require("batteries"):export()
-
 soup = require("soup")
+
 --setup the main loop
 main_loop = soup.main_loop({
 	--args?
@@ -23,6 +24,7 @@ function love.draw()
 end
 
 function love.keypressed(k)
+	--inline restart or quit, handy for development
 	if love.keyboard.isDown("lctrl") or love.keyboard.isDown("rctrl") then
 		if k == "r" then
 			love.event.quit("restart")
@@ -38,7 +40,6 @@ function love.keyreleased(k)
 end
 
 function love.mousepressed(x, y, b)
-	soft_cursor:clicked()
 	input.mouse:mousepressed(x, y, b)
 end
 
