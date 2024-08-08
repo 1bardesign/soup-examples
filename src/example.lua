@@ -14,13 +14,13 @@ function state:enter()
 				self.all:add(c)
 				return c
 			end,
-			added = function(self, component)
-				if component.pos and component.vel and component.acc then
-					self.all:add(component)
+			added = function(self, v)
+				if v.pos and v.vel and v.acc then
+					self.all:add(v)
 				end
 			end,
-			removed = function(self, component)
-				self.all:remove(component)
+			removed = function(self, v)
+				self.all:remove(v)
 			end,
 			update = function(self, dt)
 				for _, v in self.all:ipairs() do
@@ -68,7 +68,7 @@ function state:enter()
 			if self.timer >= self.time then
 				self.timer = self.timer - self.time
 				local e = kernel:entity()
-				local phys = e:add_named_from_system("physics", "physics", {
+				e:add_named_from_system("physics", "physics", {
 					pos = vec2(love.mouse.getPosition()),
 					vel = vec2(
 						love.math.randomNormal(),
@@ -76,7 +76,7 @@ function state:enter()
 					):smuli(10),
 					acc = vec2(0, 50),
 				})
-				local expire = e:add_named("expire", {
+				e:add_named("expire", {
 					timer = 0,
 					time = 5,
 					factor = function(self)
@@ -89,10 +89,10 @@ function state:enter()
 						end
 					end,
 				})
-				local dot = e:add_named("dot", {
-					pos = phys.pos,
+				e:add_named("dot", {
+					pos = e.physics.pos,
 					draw = function(self)
-						lg.setColor(1, 1, 1, math.lerp(1, 0, expire:factor()))
+						lg.setColor(1, 1, 1, math.lerp(1, 0, e.expire:factor()))
 						lg.circle("fill", 0, 0, 2)
 					end,
 				})
@@ -112,7 +112,7 @@ function state:enter()
 				%04.2fms draw
 				%04.2fms collect garbage
 				%04.2fmb
-				%d components
+				%d behaviours
 			]]):dedent():format(
 				TOTAL_TIME * 1000,
 				1 / math.max(0.0001, TOTAL_TIME),
